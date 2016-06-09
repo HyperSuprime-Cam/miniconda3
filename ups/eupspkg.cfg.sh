@@ -1,6 +1,6 @@
 # EupsPkg config file. Sourced by 'eupspkg'
 
-MINICONDA2_VERSION=${MINICONDA2_VERSION:-3.19.0} # Version of Miniconda to install
+MINICONDA3_VERSION=${MINICONDA3_VERSION:-4.0.5} # Version of Miniconda to install
 
 prep() { :; }
 build() { :; }
@@ -17,11 +17,11 @@ install()
     case $(uname -s) in
         Linux*)
             ana_platform="Linux-x86_64"
-            conda_packages="conda_packages-linux-64.txt"
+            conda_packages="conda3_packages-linux-64.txt"
             ;;
         Darwin*)
             ana_platform="MacOSX-x86_64"
-            conda_packages="conda_packages-osx-64.txt"
+            conda_packages="conda3_packages-osx-64.txt"
             ;;
         *)
             echo "Cannot install miniconda: unsupported platform $(uname -s)"
@@ -29,8 +29,8 @@ install()
             ;;
     esac
 
-    miniconda_file_name="Miniconda2-${MINICONDA2_VERSION}-${ana_platform}.sh"
-    echo "::: Deploying Miniconda ${MINICONDA2_VERSION} for ${ana_platform}"
+    miniconda_file_name="Miniconda3-${MINICONDA3_VERSION}-${ana_platform}.sh"
+    echo "::: Deploying Miniconda3 ${MINICONDA3_VERSION} for ${ana_platform}"
     $CURL -# -L -O http://repo.continuum.io/miniconda/${miniconda_file_name}
 
     clean_old_install
