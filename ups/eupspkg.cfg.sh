@@ -1,6 +1,6 @@
 # EupsPkg config file. Sourced by 'eupspkg'
 
-MINICONDA3_VERSION=${MINICONDA3_VERSION:-4.0.5} # Version of Miniconda to install
+MINICONDA3_VERSION=${MINICONDA3_VERSION:-4.2.12} # Version of Miniconda to install
 
 prep() { :; }
 build() { :; }
