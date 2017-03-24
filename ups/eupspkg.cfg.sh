@@ -4,6 +4,8 @@
 
 MINICONDA3_VERSION=${MINICONDA3_VERSION:-4.2.12} # Version of Miniconda to install
 LSSTSW_REF=${LSSTSW_REF:-7c8e670ce392ea11c64b4c326a130d6fa7f2d489}
+MINICONDA_BASE_URL=${MINICONDA_BASE_URL:-https://repo.continuum.io/miniconda}
+CONDA_CHANNELS=${CONDA_CHANNELS:-""}
 
 prep() { :; }
 build() { :; }
@@ -33,8 +35,8 @@ install()
     esac
 
     miniconda_file_name="Miniconda3-${MINICONDA3_VERSION}-${ana_platform}.sh"
-    echo "::: Deploying Miniconda3 ${MINICONDA3_VERSION} for ${ana_platform}"
-    $CURL -# -L -O "http://repo.continuum.io/miniconda/${miniconda_file_name}"
+    echo "::: Deploying Miniconda ${MINICONDA3_VERSION} for ${ana_platform}"
+    $CURL -# -L -O "${MINICONDA_BASE_URL}/${miniconda_file_name}"
 
     clean_old_install
 
@@ -50,8 +52,32 @@ install()
     fi
 
     (
+        # configure alt conda channel(s)
+        if [[ -n $CONDA_CHANNELS ]]; then
+            # shellcheck disable=SC2030
+            export PATH="$PREFIX/bin:$PATH"
+
+            # remove any previously configured non-default channels
+            # XXX allowed to fail
+            set +e
+            conda config --remove-key channels
+            set -e
+
+            for c in $CONDA_CHANNELS; do
+                conda config --add channels "$c"
+            done
+
+            # remove the default channels
+            conda config --remove channels defaults
+
+            conda config --show
+        fi
+    )
+
+    (
         # Install packages on which the stack is known to depend
 
+        # shellcheck disable=SC2031
         export PATH="$PREFIX/bin:$PATH"
         local baseurl="https://raw.githubusercontent.com/lsst/lsstsw/${LSSTSW_REF}/etc/"
         local tmpfile
